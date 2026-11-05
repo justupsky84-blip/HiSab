@@ -1,0 +1,923 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#0b1b3a">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-192.png">
+<title>HisabBook</title>
+<style>
+:root{--bg:#f3f5fa;--card:#fff;--tx:#0b1b3a;--mut:#6b7488;--bd:#e4e8f0;--navy:#0b1b3a;--inc:#10b981;--exp:#ef4444;--biz:#6366f1;--warn:#f59e0b}
+[data-theme=dark]{--bg:#0a1226;--card:#111d3a;--tx:#e9edf7;--mut:#93a0bb;--bd:#1f2d52}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{margin:0;background:var(--bg);color:var(--tx);font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;font-size:15px}
+main{max-width:680px;margin:0 auto;padding:12px 14px 96px}
+header.hdr{position:sticky;top:0;z-index:20;background:var(--navy);color:#fff;padding:10px 14px 10px;padding-top:max(10px,env(safe-area-inset-top))}
+.hin{max-width:680px;margin:0 auto}
+.top{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
+.top b{font-size:18px}
+.top button{background:none;border:none;color:#fff;font-size:19px;padding:4px 8px;cursor:pointer}
+.seg{display:grid;grid-template-columns:repeat(3,1fr);background:rgba(255,255,255,.12);border-radius:12px;padding:3px;gap:3px}
+.seg button{background:none;border:none;color:#cbd5ee;padding:7px;border-radius:9px;font:inherit;font-size:13px;cursor:pointer}
+.seg button.on{background:#fff;color:var(--navy);font-weight:700}
+.chips{display:flex;gap:8px;overflow-x:auto;padding:6px 0;scrollbar-width:none}
+.chips::-webkit-scrollbar{display:none}
+.chip{flex:none;border:1px solid var(--bd);background:var(--card);color:var(--tx);border-radius:999px;padding:6px 13px;font:inherit;font-size:13px;cursor:pointer}
+.chip.on{background:var(--navy);color:#fff;border-color:var(--navy)}
+[data-theme=dark] .chip.on{background:#2b4a9a;border-color:#2b4a9a}
+.hdr .chip{background:rgba(255,255,255,.12);border-color:transparent;color:#dbe4ff}
+.hdr .chip.on{background:#fff;color:var(--navy)}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:16px;padding:14px;margin:12px 0}
+.card h3{margin:0 0 10px;font-size:15px}
+.hero{background:linear-gradient(135deg,#0b1b3a,#1e3a8a);color:#fff;border:none}
+.hero small{color:#b8c6ea}
+.hero .big{font-size:30px;font-weight:800;margin:2px 0 10px}
+.hero .two{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.hero .two div{background:rgba(255,255,255,.1);border-radius:12px;padding:8px 10px}
+.hero .two b{display:block;font-size:16px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.metric{background:var(--card);border:1px solid var(--bd);border-radius:14px;padding:11px 12px}
+.metric small{color:var(--mut);display:block;font-size:12px}
+.metric b{font-size:17px}
+.inc{color:var(--inc)}.exp{color:var(--exp)}.biz{color:var(--biz)}.mut{color:var(--mut)}.warn{color:var(--warn)}
+small,.small{font-size:12px;color:var(--mut)}
+.qa{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin:12px 0}
+.qa button{background:var(--card);border:1px solid var(--bd);border-radius:14px;padding:10px 2px;font:inherit;font-size:11px;color:var(--tx);cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:4px}
+.qa span{font-size:20px}
+.row{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--bd);cursor:pointer}
+.row:last-child{border-bottom:none}
+.row .grow{flex:1;min-width:0}
+.row .grow b{display:block;font-weight:600}
+.row .grow small{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ic{width:38px;height:38px;border-radius:12px;display:grid;place-items:center;font-size:17px;background:var(--bg);flex:none}
+.ic.inc{background:rgba(16,185,129,.14)}.ic.exp{background:rgba(239,68,68,.14)}.ic.mut{background:rgba(99,102,241,.14)}
+.badge{display:inline-block;font-size:11px;padding:2px 8px;border-radius:999px;font-weight:700}
+.b-paid{background:rgba(16,185,129,.16);color:var(--inc)}
+.b-part{background:rgba(245,158,11,.18);color:var(--warn)}
+.b-pend{background:rgba(99,102,241,.16);color:var(--biz)}
+.b-over{background:rgba(239,68,68,.16);color:var(--exp)}
+.prog{height:6px;background:var(--bd);border-radius:6px;overflow:hidden;margin:8px 0}
+.prog i{display:block;height:100%;background:var(--inc)}
+.btn{border:1px solid var(--bd);background:var(--card);color:var(--tx);border-radius:12px;padding:10px 14px;font:inherit;font-weight:600;cursor:pointer}
+.btn.pri{background:var(--navy);color:#fff;border-color:var(--navy)}
+[data-theme=dark] .btn.pri{background:#2b4a9a;border-color:#2b4a9a}
+.btn.dng{color:var(--exp);border-color:var(--exp)}
+.btn.sm{padding:6px 10px;font-size:12px;border-radius:9px}
+.btns{display:flex;gap:8px;margin-top:14px}.btns .btn{flex:1}
+.acts{display:flex;gap:6px;flex-wrap:wrap;margin-top:6px}
+label{display:block;font-size:12px;color:var(--mut);margin:10px 0 0}
+input,select,textarea{width:100%;font:inherit;font-size:15px;color:var(--tx);background:var(--bg);border:1px solid var(--bd);border-radius:11px;padding:10px;margin-top:4px}
+input[type=file]{padding:8px}
+.fab{position:fixed;right:18px;bottom:84px;width:54px;height:54px;border-radius:18px;border:none;background:var(--inc);color:#fff;font-size:28px;box-shadow:0 6px 18px rgba(0,0,0,.25);cursor:pointer;z-index:15}
+nav.nav{position:fixed;left:0;right:0;bottom:0;background:var(--card);border-top:1px solid var(--bd);display:grid;grid-template-columns:repeat(5,1fr);z-index:20;padding-bottom:env(safe-area-inset-bottom)}
+nav.nav button{background:none;border:none;color:var(--mut);padding:8px 0 7px;font:inherit;font-size:11px;display:flex;flex-direction:column;align-items:center;gap:2px;cursor:pointer}
+nav.nav button span{font-size:20px}
+nav.nav button.on{color:var(--biz);font-weight:700}
+#modal{position:fixed;inset:0;background:rgba(5,10,25,.55);z-index:50;display:none;align-items:flex-end;justify-content:center}
+#modal.open{display:flex}
+.sheet{background:var(--card);width:100%;max-width:680px;max-height:92vh;overflow:auto;border-radius:22px 22px 0 0;padding:16px 16px 24px}
+.sh-h{display:flex;justify-content:space-between;align-items:center;font-size:17px;position:sticky;top:-16px;background:var(--card);padding:6px 0 4px;z-index:2}
+.sh-h button{background:var(--bg);border:none;border-radius:50%;width:32px;height:32px;color:var(--tx);cursor:pointer}
+#toast{position:fixed;left:50%;bottom:90px;transform:translateX(-50%);background:#111827;color:#fff;padding:10px 16px;border-radius:12px;font-size:13px;z-index:99;opacity:0;pointer-events:none;transition:.25s;max-width:90%;text-align:center}
+#toast.on{opacity:1}
+#lock{position:fixed;inset:0;background:var(--navy);z-index:100;display:none;align-items:center;justify-content:center;color:#fff;padding:24px}
+#lock.on{display:flex}
+#lock .lk{width:100%;max-width:320px;text-align:center}
+#lock input{text-align:center;font-size:26px;letter-spacing:10px;color:#fff;background:rgba(255,255,255,.1);border-color:transparent}
+.empty{text-align:center;color:var(--mut);padding:26px 10px}
+.empty span{font-size:34px;display:block;margin-bottom:6px}
+.demo{background:var(--warn);color:#fff;text-align:center;border-radius:10px;padding:6px;font-size:12px;font-weight:700;margin-bottom:8px}
+.bars{display:flex;align-items:center;gap:8px;margin:7px 0;font-size:13px}
+.bars .n{width:92px;flex:none;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.bars .t{flex:1;height:10px;background:var(--bd);border-radius:6px;overflow:hidden}
+.bars .t i{display:block;height:100%;background:var(--exp)}
+.bars .v{width:78px;text-align:right;flex:none}
+svg .bi{fill:var(--inc)}svg .be{fill:var(--exp)}svg text{fill:var(--mut);font-size:9px;text-anchor:middle}
+.legend{display:flex;gap:14px;font-size:12px;color:var(--mut);margin-top:4px}
+.legend i{display:inline-block;width:9px;height:9px;border-radius:3px;margin-right:4px}
+.rcpt{max-width:100%;border-radius:10px;margin-top:8px}
+.kv{display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px dashed var(--bd)}
+.kv:last-child{border-bottom:none}
+.pr-title{display:none}
+@media print{header.hdr,nav.nav,.fab,.noprint,#toast{display:none!important}:root{--bg:#fff;--card:#fff;--tx:#000;--mut:#555;--bd:#ccc}body{background:#fff}.pr-title{display:block;font-size:18px;font-weight:700;margin-bottom:8px}.card{break-inside:avoid}}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<div id="modal"></div>
+<div id="toast"></div>
+<div id="lock"></div>
+<input type="file" id="rf" accept=".json,application/json" hidden>
+
+<script>
+'use strict';
+/* ===================== Helpers ===================== */
+const $=s=>document.querySelector(s);
+const MON=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+const METHODS=['Cash','UPI','Card','Bank transfer','Cheque','Other'];
+const ls={get:k=>{try{return localStorage.getItem(k)}catch(e){return null}},set:(k,v)=>{try{localStorage.setItem(k,v);return true}catch(e){return false}},del:k=>{try{localStorage.removeItem(k)}catch(e){}}};
+const uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,8);
+const now=()=>new Date().toISOString();
+const pad=n=>String(n).padStart(2,'0');
+const fd8=d=>d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate());
+const today=()=>fd8(new Date());
+const pd=s=>new Date(s+'T00:00:00');
+const addDays=(s,n)=>{const d=pd(s);d.setDate(d.getDate()+n);return fd8(d)};
+const addMonths=(s,n)=>{const d=pd(s),day=d.getDate();const x=new Date(d.getFullYear(),d.getMonth()+n,1);x.setDate(Math.min(day,new Date(x.getFullYear(),x.getMonth()+1,0).getDate()));return fd8(x)};
+const dfmt=s=>{if(!s)return '';const [y,m,d]=s.split('-');return (+d)+' '+MON[m-1]+' '+y.slice(2)};
+const r2=n=>Math.round((n+Number.EPSILON)*100)/100;
+const num=v=>{const n=parseFloat(v);return isNaN(n)?NaN:r2(n)};
+const inr=n=>(n<0?'-':'')+'₹'+Math.abs(n).toLocaleString('en-IN',{maximumFractionDigits:2});
+const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const pick=o=>Object.fromEntries(Object.entries(o).filter(([k,v])=>v!==undefined&&v!==''));
+const live=a=>a.filter(x=>!x.deleted);
+const rec=o=>Object.assign({id:uid(),userId:'local',created:now(),updated:now()},o);
+const byDate=(a,b)=>b.date.localeCompare(a.date)||b.created.localeCompare(a.created);
+let toastT;
+function toast(m){const t=$('#toast');t.textContent=m;t.classList.add('on');clearTimeout(toastT);toastT=setTimeout(()=>t.classList.remove('on'),2400);return false}
+function download(name,text,mime){const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([text],{type:mime||'text/plain'}));a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),2000)}
+const empty=(m,i)=>`<div class="empty"><span>${i||'📭'}</span>${m}</div>`;
+
+/* ===================== Data layer ===================== */
+const KEYS={real:'hisabbook_v1',demo:'hisabbook_demo_v1',pin:'hisabbook_pin',ui:'hisabbook_ui',auto:'hisabbook_autobackup'};
+let demo=ls.get('hb_demo')==='1';
+let db=null;
+let ui=Object.assign({tab:'home',scope:'combined',biz:'all'},(()=>{try{return JSON.parse(ls.get(KEYS.ui)||'{}')}catch(e){return {}}})());
+ui.page=null;ui.sub={};
+const saveUi=()=>ls.set(KEYS.ui,JSON.stringify({tab:ui.tab,scope:ui.scope,biz:ui.biz}));
+const dbKey=()=>demo?KEYS.demo:KEYS.real;
+
+function blank(){
+  const cats=[];const mk=(n,t,s)=>cats.push({id:uid(),userId:'local',name:n,type:t,scope:s,builtin:true,created:now()});
+  ['Food','Travel','Shopping','Education','Bills','Healthcare','Entertainment','Other'].forEach(n=>mk(n,'expense','personal'));
+  ['Salary','Business','Gift','Other'].forEach(n=>mk(n,'income','personal'));
+  ['Sales','Other Income'].forEach(n=>mk(n,'income','business'));
+  ['Purchase','Rent','Salary','Transport','Utilities','Marketing','Other'].forEach(n=>mk(n,'expense','business'));
+  return {v:1,created:now(),accounts:[rec({name:'Cash',type:'cash',opening:0,scope:'personal',bizId:null})],businesses:[],categories:cats,contacts:[],tx:[],udhaar:[],payments:[],reminders:[],items:[],audit:[],profile:{name:''}};
+}
+function load(){
+  try{db=JSON.parse(ls.get(dbKey()))}catch(e){db=null}
+  if(!db||!Array.isArray(db.accounts)){ if(demo){seedDemo()}else{db=blank()} save(); }
+  ['accounts','businesses','categories','contacts','tx','udhaar','payments','reminders','items','audit'].forEach(k=>{if(!Array.isArray(db[k]))db[k]=[]});
+  db.profile=db.profile||{name:''};
+}
+function save(){
+  const ok=ls.set(dbKey(),JSON.stringify(db));
+  if(!ok)toast('Storage full! Backup lo aur receipts hata do');
+  return ok;
+}
+function autoBackup(){
+  if(demo)return;
+  try{const cur=JSON.parse(ls.get(KEYS.auto)||'null');if(cur&&cur.date===today())return;
+    if(db.tx.length||db.udhaar.length)ls.set(KEYS.auto,JSON.stringify({date:today(),data:db}));}catch(e){}
+}
+function audit(action,type,recId,before,after){
+  db.audit.push({id:uid(),userId:'local',ts:now(),action,type,recId,before:before||null,after:after||null});
+  if(db.audit.length>1500)db.audit.splice(0,db.audit.length-1500);
+}
+
+/* ---- lookups ---- */
+const acc=id=>db.accounts.find(a=>a.id===id);
+const accName=id=>(acc(id)||{name:'?'}).name;
+const bizName=id=>(db.businesses.find(b=>b.id===id)||{name:''}).name;
+const cname=id=>(db.contacts.find(c=>c.id===id)||{name:'?'}).name;
+const bizs=()=>live(db.businesses);
+const accountsFor=(scope,bizId)=>live(db.accounts).filter(a=>a.scope===scope&&(scope==='personal'||a.bizId===bizId));
+
+/* ---- scope predicates ---- */
+const P={personal:r=>r.scope==='personal',all:()=>true,biz:r=>r.scope==='business'&&(ui.biz==='all'||r.bizId===ui.biz)};
+const bizP=()=>r=>r.scope==='business'&&(ui.scope!=='business'||ui.biz==='all'||r.bizId===ui.biz);
+const cur=()=>ui.scope==='personal'?P.personal:ui.scope==='business'?P.biz:P.all;
+const txsFor=p=>live(db.tx).filter(t=>t.type==='transfer'?(p(acc(t.accountId)||{})||p(acc(t.toAccountId)||{})):p(t));
+
+/* ---- calculations ---- */
+function accBalance(a){
+  let b=a.opening||0;
+  for(const t of live(db.tx)){
+    if(t.type==='income'&&t.accountId===a.id)b+=t.amount;
+    else if(t.type==='expense'&&t.accountId===a.id)b-=t.amount;
+    else if(t.type==='transfer'){if(t.accountId===a.id)b-=t.amount;if(t.toAccountId===a.id)b+=t.amount}
+  }
+  const U={};live(db.udhaar).forEach(u=>U[u.id]=u);
+  for(const u of Object.values(U)){if(u.accountId===a.id)b+=u.dir==='given'?-u.amount:u.amount}
+  for(const p of live(db.payments)){const u=U[p.udhaarId];if(u&&p.accountId===a.id)b+=u.dir==='given'?p.amount:-p.amount}
+  return r2(b);
+}
+function accFlow(a){ // cash inflow / outflow for account
+  let i=0,o=0;
+  for(const t of live(db.tx)){
+    if(t.type==='income'&&t.accountId===a.id)i+=t.amount;
+    else if(t.type==='expense'&&t.accountId===a.id)o+=t.amount;
+    else if(t.type==='transfer'){if(t.accountId===a.id)o+=t.amount;if(t.toAccountId===a.id)i+=t.amount}
+  }
+  return {i:r2(i),o:r2(o)};
+}
+const paid=u=>r2(live(db.payments).filter(p=>p.udhaarId===u.id).reduce((s,p)=>s+p.amount,0));
+const remaining=u=>Math.max(0,r2(u.amount-paid(u)));
+const ustat=u=>{const r=remaining(u);return r<=0.004?'Paid':paid(u)>0?'Partial':'Pending'};
+const isOver=u=>remaining(u)>0.004&&u.due&&u.due<today();
+function stats(p,from,to){
+  let inc=0,exp=0,nonIn=0,nonOut=0;const cats={};const list=[];
+  for(const t of live(db.tx)){
+    if(t.type==='transfer'||!p(t))continue;
+    if(from&&t.date<from)continue;if(to&&t.date>to)continue;
+    list.push(t);
+    if(t.kind==='nonop'){if(t.type==='income')nonIn+=t.amount;else nonOut+=t.amount;continue}
+    if(t.type==='income')inc+=t.amount;else{exp+=t.amount;cats[t.category]=r2((cats[t.category]||0)+t.amount)}
+  }
+  return {inc:r2(inc),exp:r2(exp),net:r2(inc-exp),nonIn:r2(nonIn),nonOut:r2(nonOut),cats,list};
+}
+function udStats(p){
+  let given=0,back=0,borrowed=0,repaid=0;
+  for(const u of live(db.udhaar).filter(p)){const pd_=paid(u);if(u.dir==='given'){given+=u.amount;back+=pd_}else{borrowed+=u.amount;repaid+=pd_}}
+  return {given:r2(given),back:r2(back),borrowed:r2(borrowed),repaid:r2(repaid),recv:r2(given-back),pay:r2(borrowed-repaid)};
+}
+function contactStats(cid){
+  const s={given:0,back:0,borrowed:0,repaid:0};
+  for(const u of live(db.udhaar).filter(x=>x.contactId===cid)){const p=paid(u);if(u.dir==='given'){s.given+=u.amount;s.back+=p}else{s.borrowed+=u.amount;s.repaid+=p}}
+  s.recv=r2(s.given-s.back);s.pay=r2(s.borrowed-s.repaid);s.net=r2(s.recv-s.pay);return s;
+}
+function range(kind,ref){
+  const d=pd(ref);let a,b;
+  if(kind==='day'){a=b=ref}
+  else if(kind==='week'){const dow=(d.getDay()+6)%7;a=addDays(ref,-dow);b=addDays(a,6)}
+  else if(kind==='month'){a=ref.slice(0,7)+'-01';b=ref.slice(0,7)+'-'+pad(new Date(d.getFullYear(),d.getMonth()+1,0).getDate())}
+  else{a=ref.slice(0,4)+'-01-01';b=ref.slice(0,4)+'-12-31'}
+  return [a,b];
+}
+function prevRef(kind,ref){
+  if(kind==='day')return addDays(ref,-1);
+  if(kind==='week')return addDays(ref,-7);
+  if(kind==='month')return addDays(ref.slice(0,7)+'-01',-1);
+  return (+ref.slice(0,4)-1)+'-06-15';
+}
+function monthBuckets(n){
+  const o=[];const t=pd(today());
+  for(let i=n-1;i>=0;i--){const d=new Date(t.getFullYear(),t.getMonth()-i,1);const ym=d.getFullYear()+'-'+pad(d.getMonth()+1);o.push([MON[d.getMonth()],ym+'-01',ym+'-31'])}
+  return o;
+}
+function reportBuckets(kind,ref){
+  const [a,b]=range(kind,ref);const o=[];
+  if(kind==='year'){for(let m=0;m<12;m++){const ym=a.slice(0,4)+'-'+pad(m+1);o.push([MON[m],ym+'-01',ym+'-31'])}}
+  else if(kind==='month'||kind==='week'){let d=a;while(d<=b){const dt=pd(d);o.push([kind==='week'?['Mon','Tue','Wed','Thu','Fri','Sat','Sun'][(dt.getDay()+6)%7]:((dt.getDate()-1)%5===0?String(dt.getDate()):''),d,d]);d=addDays(d,1)}}
+  return o;
+}
+function barChart(buckets,p){
+  const data=buckets.map(([l,a,b])=>{const s=stats(p,a,b);return {l,i:s.inc,e:s.exp}});
+  const max=Math.max(1,...data.flatMap(d=>[d.i,d.e]));
+  const W=320,H=140,step=W/data.length,bw=Math.max(2,Math.min(14,step/2.6));
+  let g='';
+  data.forEach((d,i)=>{
+    const x=i*step+step/2,hi=d.i/max*100,he=d.e/max*100;
+    g+=`<rect class="bi" x="${(x-bw-0.5).toFixed(1)}" y="${(112-hi).toFixed(1)}" width="${bw.toFixed(1)}" height="${hi.toFixed(1)}" rx="2"/><rect class="be" x="${(x+0.5).toFixed(1)}" y="${(112-he).toFixed(1)}" width="${bw.toFixed(1)}" height="${he.toFixed(1)}" rx="2"/><text x="${x.toFixed(1)}" y="128">${esc(d.l)}</text>`;
+  });
+  return `<svg viewBox="0 0 ${W} ${H}" width="100%" role="img" aria-label="Income vs expense">${g}</svg><div class="legend"><span><i style="background:var(--inc)"></i>Income</span><span><i style="background:var(--exp)"></i>Expense</span></div>`;
+}
+function catBars(cats){
+  const e=Object.entries(cats).sort((a,b)=>b[1]-a[1]);if(!e.length)return empty('Is period me koi kharcha nahi','🧾');
+  const max=e[0][1];
+  return e.map(([n,v])=>`<div class="bars"><div class="n">${esc(n)}</div><div class="t"><i style="width:${(v/max*100).toFixed(0)}%"></i></div><div class="v">${inr(v)}</div></div>`).join('');
+}
+function upcomingAll(){
+  const o=[];
+  live(db.reminders).filter(r=>!r.done).forEach(r=>o.push({key:'r'+r.id,title:r.title,date:r.date,amount:r.amount||0,kind:'rem',id:r.id}));
+  live(db.udhaar).filter(u=>remaining(u)>0.004&&u.due).forEach(u=>o.push({key:'u'+u.id,title:(u.dir==='given'?'Lena: ':'Dena: ')+cname(u.contactId),date:u.due,amount:remaining(u),kind:'ud',id:u.id,scope:u.scope,bizId:u.bizId}));
+  return o.sort((a,b)=>a.date.localeCompare(b.date));
+}
+
+/* ===================== Demo data ===================== */
+function seedDemo(){
+  db=blank();let s=7;const rnd=()=>(s=(s*16807)%2147483647)/2147483647;
+  const cash=db.accounts[0];cash.opening=5000;
+  const bank=rec({name:'HDFC Bank',type:'bank',opening:42000,scope:'personal',bizId:null});
+  const upi=rec({name:'PhonePe UPI',type:'upi',opening:3000,scope:'personal',bizId:null});
+  const biz=rec({name:'Sharma Kirana',category:'Retail',starting:20000});
+  const bacc=rec({name:'Shop Cash',type:'cash',opening:20000,scope:'business',bizId:biz.id});
+  db.accounts.push(bank,upi,bacc);db.businesses.push(biz);
+  const T=o=>{if(o.date>today())return;db.tx.push(rec(Object.assign({kind:'normal',method:'UPI',note:'',source:'',category:''},o)))};
+  const first=today().slice(0,7)+'-01';
+  for(let m=2;m>=0;m--){
+    const base=addMonths(first,-m);
+    T({type:'income',scope:'personal',accountId:bank.id,amount:45000,date:base,category:'Salary',source:'Employer',method:'Bank transfer'});
+    for(let i=0;i<14;i++)T({type:'expense',scope:'personal',accountId:rnd()>.5?upi.id:cash.id,amount:Math.round(100+rnd()*1500),date:addDays(base,Math.floor(rnd()*27)),category:['Food','Travel','Shopping','Bills','Entertainment'][Math.floor(rnd()*5)],note:'Demo'});
+    for(let i=0;i<12;i++)T({type:'income',scope:'business',bizId:biz.id,accountId:bacc.id,amount:Math.round(2000+rnd()*6000),date:addDays(base,Math.floor(rnd()*27)),category:'Sales',method:'Cash',note:'Demo sale'});
+    for(let i=0;i<4;i++)T({type:'expense',scope:'business',bizId:biz.id,accountId:bacc.id,amount:Math.round(3000+rnd()*5000),date:addDays(base,Math.floor(rnd()*27)),category:'Purchase',method:'Cash',note:'Demo stock'});
+    T({type:'expense',scope:'business',bizId:biz.id,accountId:bacc.id,amount:8000,date:addDays(base,4),category:'Rent',method:'Cash'});
+    T({type:'expense',scope:'personal',accountId:bank.id,amount:12000,date:addDays(base,2),category:'Bills',note:'Ghar ka rent',method:'Bank transfer'});
+  }
+  T({type:'transfer',scope:'personal',accountId:bank.id,toAccountId:cash.id,amount:3000,date:addDays(today(),-6),note:'ATM'});
+  T({type:'income',scope:'business',bizId:biz.id,accountId:bacc.id,amount:15000,date:addDays(today(),-20),kind:'nonop',category:'Other Income',note:'Owner capital (P&L me nahi)'});
+  const C=(n,ph,k,sc,b)=>{const c=rec({name:n,phone:ph,kind:k,scope:sc,bizId:b,notes:''});db.contacts.push(c);return c};
+  const U=(dir,c,amt,date,due,a,sc,b)=>{const u=rec({dir,contactId:c.id,amount:amt,date,due,accountId:a,scope:sc,bizId:b,notes:''});db.udhaar.push(u);return u};
+  const Pay=(u,amt,date,a)=>db.payments.push(rec({udhaarId:u.id,amount:amt,date,accountId:a,note:''}));
+  const ramesh=C('Ramesh','9876543210','personal','personal',null);
+  const u1=U('given',ramesh,5000,addDays(today(),-40),addDays(today(),-5),cash.id,'personal',null);Pay(u1,2000,addDays(today(),-15),cash.id);
+  const suresh=C('Suresh Bhai','9123456780','personal','personal',null);
+  U('borrowed',suresh,10000,addDays(today(),-25),addDays(today(),12),bank.id,'personal',null);
+  const gupta=C('Gupta Ji','9000011111','customer','business',biz.id);
+  const u3=U('given',gupta,3500,addDays(today(),-18),addDays(today(),7),bacc.id,'business',biz.id);Pay(u3,1000,addDays(today(),-8),bacc.id);
+  const sup=C('Agarwal Traders','9222233333','supplier','business',biz.id);
+  U('borrowed',sup,12000,addDays(today(),-12),addDays(today(),3),bacc.id,'business',biz.id);
+  db.reminders.push(rec({title:'Bijli bill',amount:1800,date:addDays(today(),2),repeat:'monthly',done:false,note:''}),rec({title:'Mobile recharge',amount:299,date:addDays(today(),9),repeat:'monthly',done:false,note:''}));
+  db.items.push(rec({bizId:biz.id,name:'Atta 10kg',buy:340,sell:385,qty:25,min:10}),rec({bizId:biz.id,name:'Cheeni 1kg',buy:42,sell:48,qty:6,min:10}),rec({bizId:biz.id,name:'Tel 1L',buy:120,sell:138,qty:18,min:8}));
+}
+
+/* ===================== Modal ===================== */
+let MOD=null,busy=false;
+function openModal(title,body,onSubmit,o={}){
+  MOD={onSubmit,reopen:o.reopen||null,del:o.del||null};
+  $('#modal').innerHTML=`<div class="sheet"><div class="sh-h"><b>${title}</b><button type="button" data-a="closem">✕</button></div><form id="mform" autocomplete="off">${body}${o.noSubmit?'':`<div class="btns"><button class="btn pri" type="submit">${o.label||'Save'}</button>${o.del?'<button type="button" class="btn dng" data-a="mdel">Delete</button>':''}</div>`}</form></div>`;
+  $('#modal').classList.add('open');
+}
+function closeModal(){$('#modal').classList.remove('open');$('#modal').innerHTML='';MOD=null}
+const field=(l,n,t,v,x)=>`<label>${l}<input name="${n}" type="${t||'text'}" value="${esc(v==null?'':v)}" ${x||''}></label>`;
+const sel=(l,n,opts,v,x)=>`<label>${l}<select name="${n}" ${x||''}>${opts.map(o=>{const [a,b]=Array.isArray(o)?o:[o,o];return `<option value="${esc(a)}" ${a==v?'selected':''}>${esc(b)}</option>`}).join('')}</select></label>`;
+const area=(l,n,v)=>`<label>${l}<textarea name="${n}" rows="2">${esc(v||'')}</textarea></label>`;
+function shrink(file){
+  return new Promise((res,rej)=>{
+    const r=new FileReader();r.onerror=()=>rej();
+    r.onload=()=>{const im=new Image();im.onerror=()=>rej();im.onload=()=>{
+      const m=700,k=Math.min(1,m/Math.max(im.width,im.height));const c=document.createElement('canvas');c.width=Math.round(im.width*k);c.height=Math.round(im.height*k);
+      c.getContext('2d').drawImage(im,0,0,c.width,c.height);res(c.toDataURL('image/jpeg',.6))};im.src=r.result};
+    r.readAsDataURL(file);
+  });
+}
+
+/* ===================== Transactions ===================== */
+function txRow(t){
+  const isT=t.type==='transfer';
+  const cls=t.type==='income'?'inc':t.type==='expense'?'exp':'mut';
+  const sign=t.type==='income'?'+':t.type==='expense'?'−':'⇄';
+  const icon=t.type==='income'?'↓':t.type==='expense'?'↑':'⇄';
+  const title=isT?`${esc(accName(t.accountId))} → ${esc(accName(t.toAccountId))}`:esc(t.category||'—');
+  const meta=[dfmt(t.date),isT?'Transfer':esc(accName(t.accountId)),t.scope==='business'&&!isT?'🏢 '+esc(bizName(t.bizId)):'',t.note?esc(t.note):'',t.kind==='nonop'?'<i>P&L me nahi</i>':''].filter(Boolean).join(' · ');
+  return `<div class="row" data-a="edittx" data-id="${t.id}"><div class="ic ${cls}">${icon}</div><div class="grow"><b>${title}</b><small>${meta}</small></div><b class="${cls}">${sign}${inr(t.amount)}</b></div>`;
+}
+function openTxForm(t0){
+  const t=Object.assign({type:'expense',scope:ui.scope==='business'?'business':'personal',bizId:null,date:today(),kind:'normal',method:'Cash',amount:'',category:'',note:'',source:''},t0||{});
+  const isT=t.type==='transfer';
+  if(t.scope==='business'&&!bizs().length&&!isT){t.scope='personal';toast('Pehle ek Business banao (Business tab)')}
+  if(t.scope==='business'&&!bizs().find(b=>b.id===t.bizId))t.bizId=(ui.biz!=='all'&&bizs().find(b=>b.id===ui.biz)?ui.biz:(bizs()[0]||{}).id)||null;
+  const accs=isT?live(db.accounts):accountsFor(t.scope,t.bizId);
+  if(!accs.find(a=>a.id===t.accountId))t.accountId=(accs[0]||{}).id;
+  if(isT&&(!t.toAccountId||t.toAccountId===t.accountId||!acc(t.toAccountId)))t.toAccountId=(accs.find(a=>a.id!==t.accountId)||{}).id;
+  const cats=live(db.categories).filter(c=>c.type===t.type&&c.scope===t.scope).map(c=>c.name);
+  if(!isT&&!cats.includes(t.category))t.category=cats[0]||'Other';
+  const lab=a=>a.name+(a.scope==='business'?' 🏢'+bizName(a.bizId):'')+' ('+inr(accBalance(a))+')';
+  const html=
+    sel('Type','type',[['expense','Expense (kharcha)'],['income','Income (aay)'],['transfer','Transfer (account to account)']],t.type,'data-re')+
+    (isT?'':sel('Kiske liye','scope',[['personal','Personal'],['business','Business']],t.scope,'data-re'))+
+    (!isT&&t.scope==='business'?sel('Business','bizId',bizs().map(b=>[b.id,b.name]),t.bizId,'data-re'):'')+
+    sel(isT?'From account':'Account','accountId',accs.map(a=>[a.id,lab(a)]),t.accountId,'data-re')+
+    (isT?sel('To account','toAccountId',accs.filter(a=>a.id!==t.accountId).map(a=>[a.id,lab(a)]),t.toAccountId):'')+
+    field('Amount (₹)','amount','number',t.amount,'step="0.01" min="0.01" required inputmode="decimal"')+
+    field('Date','date','date',t.date,'required')+
+    (isT?'':sel('Category','category',cats.map(c=>[c,c]),t.category))+
+    (isT?'':field(t.type==='income'?'Income source (kahan se aaya)':'Kisko diya / kahan kharch','source','text',t.source))+
+    (isT?'':sel('Payment method','method',METHODS,t.method))+
+    (!isT&&t.scope==='business'?sel('P&L treatment','kind',[['normal','Normal (revenue / expense)'],['nonop','Capital / Loan / Internal — P&L me nahi gina jayega']],t.kind):'')+
+    field('Description / notes','note','text',t.note)+
+    (!isT&&t.type==='expense'?`<label>Receipt photo (optional)<input type="file" name="receipt" accept="image/*"></label>${t.receipt?`<img class="rcpt" src="${t.receipt}" alt="receipt">`:''}`:'');
+  if(!accs.length&&!isT){return toast('Is scope me koi account nahi hai. Settings se account banao.')}
+  openModal(t.id?'Entry edit karo':(isT?'Transfer':t.type==='income'?'Income add karo':'Expense add karo'),html,async(d,fd)=>{
+    const amount=num(d.amount);
+    if(!(amount>0))return toast('Amount 0 se zyada hona chahiye');
+    if(!d.date)return toast('Date daalo');
+    if(!d.accountId)return toast('Account chuno');
+    if(isT&&(!d.toAccountId||d.toAccountId===d.accountId))return toast('Do alag accounts chuno');
+    const a=acc(d.accountId);
+    const o={type:t.type,amount,date:d.date,accountId:d.accountId,note:(d.note||'').trim()};
+    if(isT){o.toAccountId=d.toAccountId;o.scope=a.scope;o.bizId=a.bizId||null;o.category='';o.kind='normal';o.source='';o.method=''}
+    else{o.scope=t.scope;o.bizId=t.scope==='business'?(d.bizId||t.bizId):null;o.category=d.category;o.source=(d.source||'').trim();o.method=d.method;o.kind=t.scope==='business'?(d.kind||'normal'):'normal'}
+    if(!t.id){
+      const dup=live(db.tx).find(x=>x.type===o.type&&x.amount===o.amount&&x.date===o.date&&x.accountId===o.accountId&&(x.toAccountId||'')===(o.toAccountId||'')&&x.category===o.category&&x.note===o.note);
+      if(dup&&!confirm('Bilkul same entry pehle se maujood hai. Phir bhi add karna hai?'))return false;
+    }
+    const f=fd.get('receipt');
+    if(f&&f.size){try{o.receipt=await shrink(f)}catch(e){toast('Receipt save nahi hui')}}
+    else if(t.receipt)o.receipt=t.receipt;
+    if(t.id){const r=db.tx.find(x=>x.id===t.id);const before=JSON.parse(JSON.stringify(r));Object.assign(r,o,{updated:now()});audit('edit','tx',r.id,before,JSON.parse(JSON.stringify(r)))}
+    else{const r=rec(o);db.tx.push(r);audit('add','tx',r.id,null,JSON.parse(JSON.stringify(r)))}
+    save();render();toast('Save ho gaya ✅');
+  },{reopen:d=>openTxForm(Object.assign({},t,d)),del:t.id?()=>{
+    if(!confirm('Ye entry delete karni hai? (Audit log me record rahega)'))return;
+    const r=db.tx.find(x=>x.id===t.id);const before=JSON.parse(JSON.stringify(r));r.deleted=true;r.deletedAt=now();audit('delete','tx',r.id,before,null);save();closeModal();render();toast('Delete ho gaya');
+  }:null});
+}
+function txListHtml(){
+  const p=cur(),q=(ui.sub.tq||'').trim().toLowerCase(),f=ui.sub.tf||'all',m=ui.sub.tm||'';
+  let list=txsFor(p).filter(t=>(f==='all'||t.type===f)&&(!m||t.date.startsWith(m)));
+  if(q)list=list.filter(t=>[t.note,t.category,t.source,String(t.amount),t.date,accName(t.accountId),t.toAccountId?accName(t.toAccountId):'',bizName(t.bizId),t.type].join(' ').toLowerCase().includes(q));
+  list.sort(byDate);
+  let inc=0,exp=0;list.forEach(t=>{if(t.type==='income'&&t.kind!=='nonop')inc+=t.amount;if(t.type==='expense'&&t.kind!=='nonop')exp+=t.amount});
+  if(!list.length)return empty('Koi entry nahi mili. Neeche + dabake add karo.','🧾');
+  return `<div class="card"><div class="kv"><span class="mut">${list.length} entries</span><span><b class="inc">+${inr(r2(inc))}</b> &nbsp; <b class="exp">−${inr(r2(exp))}</b></span></div>${list.slice(0,300).map(txRow).join('')}${list.length>300?'<div class="small">Pehli 300 entries dikh rahi hain — filter use karo.</div>':''}</div>`;
+}
+function txView(){
+  const f=ui.sub.tf||'all';
+  return `<div class="chips">${[['all','Sab'],['income','Income'],['expense','Expense'],['transfer','Transfer']].map(([k,l])=>`<button class="chip ${f===k?'on':''}" data-a="tf" data-v="${k}">${l}</button>`).join('')}</div>
+  <div class="grid2"><input id="tq" placeholder="🔍 Search..." value="${esc(ui.sub.tq||'')}"><input id="tm" type="month" value="${esc(ui.sub.tm||'')}"></div>
+  <div id="txlist">${txListHtml()}</div><button class="fab" data-a="addtx" data-type="expense" aria-label="Add">+</button>`;
+}
+
+/* ===================== Udhaar ===================== */
+function contactFor(name,phone,kind,scope,bizId){
+  const n=name.trim().toLowerCase();
+  let c=live(db.contacts).find(x=>x.name.toLowerCase()===n&&x.scope===scope&&(scope==='personal'||x.bizId===bizId));
+  if(!c){c=rec({name:name.trim(),phone:phone||'',kind:kind||'personal',scope,bizId:scope==='business'?bizId:null,notes:''});db.contacts.push(c)}
+  else{if(phone)c.phone=phone;if(kind)c.kind=kind;c.updated=now()}
+  return c;
+}
+function openUdhaarForm(u0){
+  const u=Object.assign({dir:'given',scope:ui.scope==='business'?'business':'personal',bizId:null,name:'',phone:'',kind:'personal',amount:'',date:today(),due:'',notes:''},u0||{});
+  if(u.id&&u.contactId&&!u0.name){const c=db.contacts.find(x=>x.id===u.contactId)||{};u.name=c.name||'';u.phone=c.phone||'';u.kind=c.kind||'personal'}
+  if(u.scope==='business'&&!bizs().length){u.scope='personal';toast('Business tab me pehle business banao')}
+  if(u.scope==='business'&&!bizs().find(b=>b.id===u.bizId))u.bizId=(ui.biz!=='all'&&bizs().find(b=>b.id===ui.biz)?ui.biz:(bizs()[0]||{}).id)||null;
+  const accs=accountsFor(u.scope,u.bizId);
+  if(!accs.find(a=>a.id===u.accountId))u.accountId=(accs[0]||{}).id;
+  const edit=!!u.id;
+  const html=
+    (edit?`<div class="small" style="margin-top:8px">Amount/account badalne ke liye entry delete karke dubara add karo (purane payments safe rahte hain audit me).</div>`:sel('Type','dir',[['given','Money Given — maine diya'],['borrowed','Money Borrowed — maine liya']],u.dir,'data-re'))+
+    field(u.dir==='given'?'Person ka naam':'Lender ka naam','name','text',u.name,'required')+
+    field('Phone number','phone','tel',u.phone,'inputmode="tel"')+
+    (edit?'':sel('Kiske liye','scope',[['personal','Personal'],['business','Business']],u.scope,'data-re'))+
+    (!edit&&u.scope==='business'?sel('Business','bizId',bizs().map(b=>[b.id,b.name]),u.bizId,'data-re'):'')+
+    (u.scope==='business'?sel('Contact type','kind',[['customer','Customer'],['supplier','Supplier']],u.kind==='supplier'?'supplier':'customer'):sel('Contact type','kind',[['personal','Personal']],'personal'))+
+    (edit?'':sel('Account (paisa kahan se / kahan aaya)','accountId',accs.map(a=>[a.id,a.name+' ('+inr(accBalance(a))+')']),u.accountId)+field('Amount (₹)','amount','number',u.amount,'step="0.01" min="0.01" required inputmode="decimal"'))+
+    field(u.dir==='given'?'Dene ki date':'Lene ki date','date','date',u.date,'required')+
+    field('Wapsi ki expected date','due','date',u.due)+
+    area('Notes','notes',u.notes);
+  if(!edit&&!accs.length)return toast('Is scope me account nahi hai. Settings se account banao.');
+  openModal(edit?'Udhaar edit':'Naya Udhaar',html,(d)=>{
+    if(!(d.name||'').trim())return toast('Naam daalo');
+    const scope=edit?u.scope:u.scope,bizId=u.scope==='business'?(edit?u.bizId:(d.bizId||u.bizId)):null;
+    if(edit){
+      const r=db.udhaar.find(x=>x.id===u.id);const before=JSON.parse(JSON.stringify(r));
+      const c=db.contacts.find(x=>x.id===r.contactId);if(c){c.name=d.name.trim();c.phone=d.phone||'';c.kind=d.kind||c.kind;c.updated=now()}
+      Object.assign(r,{date:d.date,due:d.due||'',notes:d.notes||'',updated:now()});audit('edit','udhaar',r.id,before,JSON.parse(JSON.stringify(r)));
+    }else{
+      const amount=num(d.amount);if(!(amount>0))return toast('Amount 0 se zyada hona chahiye');
+      if(!d.accountId)return toast('Account chuno');
+      const dup=live(db.udhaar).find(x=>x.dir===u.dir&&x.amount===amount&&x.date===d.date&&cname(x.contactId).toLowerCase()===d.name.trim().toLowerCase());
+      if(dup&&!confirm('Same naam, amount aur date ki entry maujood hai. Phir bhi add karni hai?'))return false;
+      const c=contactFor(d.name,d.phone,d.kind,scope,bizId);
+      const r=rec({dir:u.dir,contactId:c.id,amount,date:d.date,due:d.due||'',accountId:d.accountId,scope,bizId,notes:d.notes||''});
+      db.udhaar.push(r);audit('add','udhaar',r.id,null,JSON.parse(JSON.stringify(r)));
+    }
+    save();render();toast('Save ho gaya ✅');
+  },{reopen:d=>openUdhaarForm(Object.assign({},u,d)),del:edit?()=>delUdhaar(u.id):null});
+}
+function delUdhaar(id){
+  if(!confirm('Ye udhaar aur uske saare payments delete karne hain? (Audit log me record rahega)'))return;
+  const u=db.udhaar.find(x=>x.id===id);const before=JSON.parse(JSON.stringify(u));
+  u.deleted=true;u.deletedAt=now();db.payments.filter(p=>p.udhaarId===id&&!p.deleted).forEach(p=>{p.deleted=true;p.deletedAt=now();p.cascade=true});
+  audit('delete','udhaar',id,before,null);save();closeModal();render();toast('Delete ho gaya');
+}
+function openPayForm(id){
+  const u=db.udhaar.find(x=>x.id===id);if(!u)return;
+  const rem=remaining(u);if(rem<=0.004)return toast('Ye pehle se paid hai ✅');
+  const accs=accountsFor(u.scope,u.bizId);
+  openModal(u.dir==='given'?'Wapsi mili (payment received)':'Wapsi di (payment made)',
+    `<div class="small" style="margin-top:8px">${esc(cname(u.contactId))} · baaki ${inr(rem)}</div>`+
+    field('Amount (₹)','amount','number',rem,`step="0.01" min="0.01" max="${rem}" required inputmode="decimal"`)+
+    field('Date','date','date',today(),'required')+
+    sel('Account','accountId',accs.map(a=>[a.id,a.name+' ('+inr(accBalance(a))+')']),u.accountId)+
+    field('Note','note','text',''),
+    d=>{
+      const amount=num(d.amount);if(!(amount>0))return toast('Amount sahi daalo');
+      if(amount>rem+0.004)return toast('Amount baaki raashi ('+inr(rem)+') se zyada nahi ho sakti');
+      const dup=live(db.payments).find(p=>p.udhaarId===id&&p.amount===amount&&p.date===d.date&&(p.note||'')===(d.note||'').trim());
+      if(dup&&!confirm('Same payment pehle se likhi hai. Phir bhi add karni hai?'))return false;
+      const r=rec({udhaarId:id,amount,date:d.date,accountId:d.accountId,note:(d.note||'').trim()});
+      db.payments.push(r);audit('add','payment',r.id,null,JSON.parse(JSON.stringify(r)));save();render();toast('Payment record ho gayi ✅');
+    },{label:'Payment save karo'});
+}
+function openHistory(id){
+  const u=db.udhaar.find(x=>x.id===id);if(!u)return;
+  const pays=db.payments.filter(p=>p.udhaarId===id).sort((a,b)=>a.date.localeCompare(b.date)||a.created.localeCompare(b.created));
+  const st=ustat(u);
+  const html=`<div class="kv"><span>${u.dir==='given'?'Total diya':'Total liya'}</span><b>${inr(u.amount)}</b></div>
+  <div class="kv"><span>${u.dir==='given'?'Wapas mila':'Wapas diya'}</span><b>${inr(paid(u))}</b></div>
+  <div class="kv"><span>Baaki</span><b class="${u.dir==='given'?'inc':'exp'}">${inr(remaining(u))}</b></div>
+  <div class="kv"><span>Status</span><span class="badge ${st==='Paid'?'b-paid':st==='Partial'?'b-part':'b-pend'}">${st}</span></div>
+  <div class="kv"><span>Date / Due</span><span>${dfmt(u.date)} → ${u.due?dfmt(u.due):'—'}</span></div>
+  ${u.notes?`<div class="kv"><span>Notes</span><span>${esc(u.notes)}</span></div>`:''}
+  <h3 style="margin:16px 0 4px">Payment history</h3>
+  ${pays.length?pays.map(p=>`<div class="row" style="cursor:default;${p.deleted?'opacity:.45;text-decoration:line-through':''}"><div class="ic mut">₹</div><div class="grow"><b>${inr(p.amount)}</b><small>${dfmt(p.date)} · ${esc(accName(p.accountId))}${p.note?' · '+esc(p.note):''}${p.deleted?' · void':''}</small></div>${p.deleted?'':`<button type="button" class="btn sm dng" data-a="voidpay" data-id="${p.id}">Void</button>`}</div>`).join(''):empty('Abhi tak koi payment nahi','💸')}
+  <div class="btns"><button type="button" class="btn pri" data-a="udpay" data-id="${id}">+ Payment</button><button type="button" class="btn" data-a="udedit" data-id="${id}">Edit</button></div>`;
+  openModal(esc(cname(u.contactId)),html,null,{noSubmit:true});
+}
+function udCard(u){
+  const st=ustat(u),r=remaining(u),pc=Math.min(100,paid(u)/u.amount*100),over=isOver(u);
+  const c=db.contacts.find(x=>x.id===u.contactId)||{};
+  return `<div class="card"><div style="display:flex;justify-content:space-between;gap:8px"><div><b>${esc(c.name)}</b>${c.kind&&c.kind!=='personal'?` <span class="small">· ${c.kind}</span>`:''}${u.scope==='business'?` <span class="small">🏢${esc(bizName(u.bizId))}</span>`:''}<div class="small">${dfmt(u.date)}${u.due?' → due '+dfmt(u.due):''}${c.phone?' · '+esc(c.phone):''}</div></div><div style="text-align:right"><b>${inr(u.amount)}</b><div>${over?'<span class="badge b-over">Overdue</span>':`<span class="badge ${st==='Paid'?'b-paid':st==='Partial'?'b-part':'b-pend'}">${st}</span>`}</div></div></div>
+  <div class="prog"><i style="width:${pc.toFixed(0)}%"></i></div>
+  <div class="kv" style="border:none;padding:0"><span class="small">${u.dir==='given'?'Mila':'Diya'}: ${inr(paid(u))}</span><b class="${u.dir==='given'?'inc':'exp'}">Baaki ${inr(r)}</b></div>
+  <div class="acts">${r>0.004?`<button class="btn sm pri" data-a="udpay" data-id="${u.id}">+ Payment</button>`:''}<button class="btn sm" data-a="udhist" data-id="${u.id}">History</button><button class="btn sm" data-a="udedit" data-id="${u.id}">Edit</button><button class="btn sm dng" data-a="uddel" data-id="${u.id}">Delete</button></div></div>`;
+}
+function ledgerListHtml(){
+  const p=cur(),q=(ui.sub.lq||'').trim().toLowerCase();
+  let cs=live(db.contacts).filter(c=>p(c)&&(!q||(c.name+' '+(c.phone||'')).toLowerCase().includes(q)));
+  cs=cs.map(c=>({c,s:contactStats(c.id)})).sort((a,b)=>Math.abs(b.s.net)-Math.abs(a.s.net));
+  if(!cs.length)return empty('Koi contact nahi. Udhaar add karne par contact apne aap ban jata hai.','👥');
+  return `<div class="card">${cs.map(({c,s})=>`<div class="row" data-a="ledger" data-id="${c.id}"><div class="ic mut">${esc(c.name.charAt(0).toUpperCase())}</div><div class="grow"><b>${esc(c.name)}</b><small>${c.kind||''}${c.phone?' · '+esc(c.phone):''}</small></div><b class="${s.net>0?'inc':s.net<0?'exp':'mut'}">${s.net>0?'Lena '+inr(s.net):s.net<0?'Dena '+inr(-s.net):'Clear'}</b></div>`).join('')}</div>`;
+}
+function udView(){
+  const sub=ui.sub.u||'given',p=cur();
+  const tabs=`<div class="chips">${[['given','Money Given (diya)'],['borrowed','Money Borrowed (liya)'],['ledger','Contact Ledger']].map(([k,l])=>`<button class="chip ${sub===k?'on':''}" data-a="usub" data-v="${k}">${l}</button>`).join('')}</div>`;
+  if(sub==='ledger')return tabs+`<input id="lq" placeholder="🔍 Contact search..." value="${esc(ui.sub.lq||'')}"><div id="lres">${ledgerListHtml()}</div>`;
+  const list=live(db.udhaar).filter(x=>x.dir===sub&&p(x)).sort((a,b)=>(remaining(b)>0.004)-(remaining(a)>0.004)||(a.due||'9999').localeCompare(b.due||'9999')||b.date.localeCompare(a.date));
+  const tot=r2(list.reduce((s,u)=>s+u.amount,0)),pd_=r2(list.reduce((s,u)=>s+paid(u),0));
+  return tabs+`<div class="card hero"><small>${sub==='given'?'Mujhe lena hai (To Receive)':'Mujhe dena hai (To Pay)'}</small><div class="big">${inr(r2(tot-pd_))}</div><div class="two"><div><small>Total ${sub==='given'?'diya':'liya'}</small><b>${inr(tot)}</b></div><div><small>${sub==='given'?'Wapas mila':'Wapas diya'}</small><b>${inr(pd_)}</b></div></div></div>`+
+    (list.length?list.map(udCard).join(''):empty(sub==='given'?'Kisi ko udhaar nahi diya hai':'Kisi se udhaar nahi liya hai','🤝'))+
+    `<button class="fab" data-a="addud" data-dir="${sub}" aria-label="Add">+</button>`;
+}
+function openLedger(cid,filter){
+  const c=db.contacts.find(x=>x.id===cid);if(!c)return;
+  const f=filter||'all',s=contactStats(cid);
+  const us=live(db.udhaar).filter(u=>u.contactId===cid);
+  let ev=[];
+  us.forEach(u=>{ev.push({date:u.date,cr:u.created,k:u.dir,txt:u.dir==='given'?'Udhaar diya':'Udhaar liya',amt:u.amount,sub:(u.due?'due '+dfmt(u.due):'')+(u.notes?' · '+u.notes:'')});
+    live(db.payments).filter(p=>p.udhaarId===u.id).forEach(p=>ev.push({date:p.date,cr:p.created,k:'pay-'+u.dir,txt:u.dir==='given'?'Wapas mila':'Wapas diya',amt:p.amount,sub:(accName(p.accountId))+(p.note?' · '+p.note:'')}))});
+  if(f==='given')ev=ev.filter(e=>e.k==='given');else if(f==='borrowed')ev=ev.filter(e=>e.k==='borrowed');else if(f==='pay')ev=ev.filter(e=>e.k.startsWith('pay'));
+  ev.sort((a,b)=>b.date.localeCompare(a.date)||b.cr.localeCompare(a.cr));
+  const ph=(c.phone||'').replace(/\D/g,'');const wa=ph&&s.recv>0?`<a class="btn sm" target="_blank" rel="noopener" href="https://wa.me/${ph.length===10?'91'+ph:ph}?text=${encodeURIComponent('Namaste '+c.name+', aapka '+inr(s.recv)+' baaki hai. Kripya jaldi wapas kar dein. Dhanyavaad!')}">📲 WhatsApp reminder</a>`:'';
+  const html=`<div class="grid2" style="margin-top:8px"><div class="metric"><small>Total diya</small><b>${inr(s.given)}</b></div><div class="metric"><small>Wapas mila</small><b class="inc">${inr(s.back)}</b></div><div class="metric"><small>Mujhe lena</small><b class="inc">${inr(s.recv)}</b></div><div class="metric"><small>Total liya</small><b>${inr(s.borrowed)}</b></div><div class="metric"><small>Wapas diya</small><b>${inr(s.repaid)}</b></div><div class="metric"><small>Mujhe dena</small><b class="exp">${inr(s.pay)}</b></div></div>
+  <div class="acts">${wa}</div>
+  ${sel('Transactions dikhao','f',[['all','Sab'],['given','Diya hua'],['borrowed','Liya hua'],['pay','Payments']],f,'data-re')}
+  <div style="margin-top:8px">${ev.length?ev.map(e=>`<div class="row" style="cursor:default"><div class="ic ${e.k==='given'||e.k==='pay-borrowed'?'exp':'inc'}">${e.k.startsWith('pay')?'₹':'🤝'}</div><div class="grow"><b>${e.txt}</b><small>${dfmt(e.date)}${e.sub?' · '+esc(e.sub):''}</small></div><b>${inr(e.amt)}</b></div>`).join(''):empty('Koi transaction nahi','📭')}</div>
+  <h3 style="margin:14px 0 0">Contact details</h3>${field('Naam','name','text',c.name,'required')}${field('Phone','phone','tel',c.phone)}${area('Notes','notes',c.notes)}`;
+  openModal('📒 '+esc(c.name),html,d=>{
+    if(!(d.name||'').trim())return toast('Naam daalo');
+    c.name=d.name.trim();c.phone=d.phone||'';c.notes=d.notes||'';c.updated=now();save();render();toast('Contact save ho gaya');
+  },{reopen:d=>openLedger(cid,d.f),label:'Contact save karo'});
+}
+
+/* ===================== Business ===================== */
+function openBizForm(id){
+  const b=id?db.businesses.find(x=>x.id===id):{name:'',category:'',starting:''};
+  openModal(id?'Business edit':'Naya Business',field('Business ka naam','name','text',b.name,'required')+field('Category (Retail, Service...)','category','text',b.category)+(id?'':field('Starting balance (₹)','starting','number',b.starting||0,'step="0.01" inputmode="decimal"')),d=>{
+    if(!(d.name||'').trim())return toast('Naam daalo');
+    if(id){Object.assign(b,{name:d.name.trim(),category:d.category||'',updated:now()});audit('edit','business',id,null,b)}
+    else{
+      const sb=num(d.starting)||0;const nb=rec({name:d.name.trim(),category:d.category||'',starting:sb});db.businesses.push(nb);
+      db.accounts.push(rec({name:nb.name+' Cash/Bank',type:'bank',opening:sb,scope:'business',bizId:nb.id}));ui.biz=nb.id;saveUi();audit('add','business',nb.id,null,nb);
+    }
+    save();render();toast('Business save ho gaya ✅');
+  },{del:id?()=>{
+    if(!confirm('Business archive karna hai? Uske accounts/entries data me rahenge par list se hat jayenge.'))return;
+    b.deleted=true;db.accounts.filter(a=>a.bizId===id).forEach(a=>a.deleted=true);ui.biz='all';saveUi();audit('delete','business',id,b,null);save();closeModal();render();
+  }:null});
+}
+function openItemForm(id){
+  const it=id?db.items.find(x=>x.id===id):{bizId:ui.biz!=='all'?ui.biz:(bizs()[0]||{}).id,name:'',buy:'',sell:'',qty:0,min:5};
+  if(!bizs().length)return toast('Pehle business banao');
+  openModal(id?'Product edit':'Naya Product',sel('Business','bizId',bizs().map(b=>[b.id,b.name]),it.bizId)+field('Product ka naam','name','text',it.name,'required')+field('Purchase price (₹)','buy','number',it.buy,'step="0.01" min="0" required inputmode="decimal"')+field('Selling price (₹)','sell','number',it.sell,'step="0.01" min="0" required inputmode="decimal"')+field('Quantity (stock)','qty','number',it.qty,'step="1" min="0" required inputmode="numeric"')+field('Stock alert (is se kam ho to)','min','number',it.min,'step="1" min="0" inputmode="numeric"'),d=>{
+    if(!(d.name||'').trim())return toast('Naam daalo');
+    const o={bizId:d.bizId,name:d.name.trim(),buy:num(d.buy)||0,sell:num(d.sell)||0,qty:Math.max(0,parseInt(d.qty)||0),min:Math.max(0,parseInt(d.min)||0),updated:now()};
+    if(id)Object.assign(it,o);else db.items.push(rec(o));
+    save();render();toast('Product save ho gaya ✅');
+  },{del:id?()=>{if(!confirm('Product delete karna hai?'))return;it.deleted=true;save();closeModal();render()}:null});
+}
+function bizView(){
+  const list=bizs();
+  if(!list.length)return empty('Abhi koi business nahi hai.<br>Apna pehla business banao — sales, purchase, customers aur inventory sab track hoga.','🏢')+`<div class="btns"><button class="btn pri" data-a="addbiz">+ Business banao</button></div>`;
+  const p=P.biz,m=today().slice(0,7),s=stats(p,m+'-01',m+'-31'),u=udStats(p);
+  const bal=r2(live(db.accounts).filter(p).reduce((x,a)=>x+accBalance(a),0));
+  const items=live(db.items).filter(i=>ui.biz==='all'||i.bizId===ui.biz);
+  const low=items.filter(i=>i.qty<=i.min);
+  return `<div class="chips"><button class="chip ${ui.biz==='all'?'on':''}" data-a="biz" data-id="all">Sab</button>${list.map(b=>`<button class="chip ${ui.biz===b.id?'on':''}" data-a="biz" data-id="${b.id}">${esc(b.name)}</button>`).join('')}<button class="chip" data-a="addbiz">+ Naya</button></div>
+  <div class="card hero" style="background:linear-gradient(135deg,#312e81,#6366f1)"><small>Operating Profit (is mahine) = Revenue − Expenses</small><div class="big">${inr(s.net)}</div><div class="two"><div><small>Revenue</small><b>${inr(s.inc)}</b></div><div><small>Expenses</small><b>${inr(s.exp)}</b></div></div></div>
+  <div class="grid2"><div class="metric"><small>Receivable (customers se lena)</small><b class="inc">${inr(u.recv)}</b></div><div class="metric"><small>Payable (suppliers ko dena)</small><b class="exp">${inr(u.pay)}</b></div><div class="metric"><small>Business balance</small><b>${inr(bal)}</b></div><div class="metric"><small>Capital/Loan (P&L me nahi)</small><b class="biz">${inr(r2(s.nonIn-s.nonOut))}</b></div></div>
+  <div class="qa" style="grid-template-columns:repeat(4,1fr)"><button data-a="addtx" data-type="income" data-scope="business" data-cat="Sales"><span>🛒</span>Sale</button><button data-a="addtx" data-type="expense" data-scope="business" data-cat="Purchase"><span>📦</span>Purchase</button><button data-a="addud" data-dir="given" data-scope="business"><span>🧾</span>Customer udhaar</button><button data-a="addud" data-dir="borrowed" data-scope="business"><span>🚚</span>Supplier udhaar</button></div>
+  <div class="card"><h3>📦 Inventory ${low.length?`<span class="badge b-over">${low.length} low stock</span>`:''}</h3>
+  ${items.length?items.sort((a,b)=>(a.qty<=a.min?0:1)-(b.qty<=b.min?0:1)).map(i=>`<div class="row" style="cursor:default"><div class="grow" data-a="edititem" data-id="${i.id}"><b>${esc(i.name)}</b><small>Buy ${inr(i.buy)} · Sell ${inr(i.sell)} · margin ${inr(r2(i.sell-i.buy))}${ui.biz==='all'?' · '+esc(bizName(i.bizId)):''}</small></div><div style="text-align:right"><b class="${i.qty<=i.min?'exp':''}">${i.qty}</b><div class="small">${i.qty<=i.min?'⚠ low':'in stock'}</div></div><button class="btn sm" data-a="stk" data-id="${i.id}" data-d="-1">−</button><button class="btn sm" data-a="stk" data-id="${i.id}" data-d="1">+</button></div>`).join(''):empty('Koi product nahi (inventory optional hai)','📦')}
+  <button class="btn" style="width:100%;margin-top:8px" data-a="additem">+ Product add karo</button></div>
+  <div class="card"><h3>Recent business entries</h3>${txsFor(p).sort(byDate).slice(0,6).map(txRow).join('')||empty('Abhi koi entry nahi','🧾')}</div>
+  <button class="btn" style="width:100%" data-a="editbiz" data-id="${ui.biz==='all'?list[0].id:ui.biz}">✏️ ${ui.biz==='all'?esc(list[0].name):esc(bizName(ui.biz))} edit karo</button>`;
+}
+
+/* ===================== Reminders ===================== */
+function openRemForm(id){
+  const r=id?db.reminders.find(x=>x.id===id):{title:'',amount:'',date:today(),repeat:'none',note:''};
+  openModal(id?'Reminder edit':'Naya Reminder',field('Kya yaad dilana hai','title','text',r.title,'required')+field('Amount (optional)','amount','number',r.amount,'step="0.01" min="0" inputmode="decimal"')+field('Date','date','date',r.date,'required')+sel('Repeat','repeat',[['none','Ek baar'],['weekly','Har hafte'],['monthly','Har mahine'],['yearly','Har saal']],r.repeat)+field('Note','note','text',r.note),d=>{
+    if(!(d.title||'').trim())return toast('Title daalo');
+    const o={title:d.title.trim(),amount:num(d.amount)||0,date:d.date,repeat:d.repeat,note:d.note||'',updated:now()};
+    if(id)Object.assign(r,o);else db.reminders.push(rec(Object.assign(o,{done:false})));
+    save();render();toast('Reminder save ho gaya ✅');
+  },{del:id?()=>{if(!confirm('Reminder delete karna hai?'))return;r.deleted=true;save();closeModal();render()}:null});
+}
+function remRow(x){
+  const t=today(),over=x.date<t;
+  return `<div class="row" style="cursor:default"><div class="ic ${over?'exp':'mut'}">${x.kind==='ud'?'🤝':'🔔'}</div><div class="grow"><b>${esc(x.title)}</b><small>${over?'<span class="exp">Overdue · </span>':x.date===t?'<b class="warn">Aaj · </b>':''}${dfmt(x.date)}${x.amount?' · '+inr(x.amount):''}</small></div>${x.kind==='rem'?`<button class="btn sm" data-a="remdone" data-id="${x.id}">✓</button><button class="btn sm" data-a="remsnooze" data-id="${x.id}">😴</button><button class="btn sm" data-a="editrem" data-id="${x.id}">✏️</button>`:`<button class="btn sm" data-a="udhist" data-id="${x.id}">Open</button>`}</div>`;
+}
+function remView(){
+  const all=upcomingAll();const rems=all.filter(x=>x.kind==='rem'),uds=all.filter(x=>x.kind==='ud');
+  const done=live(db.reminders).filter(r=>r.done);
+  return `<div class="card"><h3>🔔 Reminders</h3>${rems.length?rems.map(remRow).join(''):empty('Koi pending reminder nahi','🎉')}<button class="btn pri" style="width:100%;margin-top:8px" data-a="addrem">+ Naya Reminder</button></div>
+  <div class="card"><h3>🤝 Udhaar due dates</h3>${uds.length?uds.map(remRow).join(''):empty('Koi due udhaar nahi','✅')}</div>
+  ${done.length?`<details class="card"><summary>Completed (${done.length})</summary>${done.map(r=>`<div class="row" style="cursor:default;opacity:.6"><div class="grow"><b>${esc(r.title)}</b><small>${dfmt(r.date)}</small></div><button class="btn sm" data-a="editrem" data-id="${r.id}">✏️</button></div>`).join('')}</details>`:''}
+  <div class="small">Notifications tabhi aate hain jab app khuli ho (Settings me allow karo).</div>`;
+}
+
+/* ===================== Home ===================== */
+function homeView(){
+  const p=cur(),m=today().slice(0,7),a=m+'-01',b=m+'-31';
+  const s=stats(p,a,b),u=udStats(p);
+  const bal=r2(live(db.accounts).filter(p).reduce((x,y)=>x+accBalance(y),0));
+  const ps=stats(P.personal,a,b),bs=stats(bizP(),a,b);
+  const showP=ui.scope!=='business',showB=ui.scope!=='personal'&&bizs().length>0;
+  const up=upcomingAll().filter(x=>x.kind==='rem'||p({scope:x.scope,bizId:x.bizId})).slice(0,3);
+  const rec6=txsFor(p).sort(byDate).slice(0,6);
+  const mc=(l,v,c)=>`<div class="metric"><small>${l}</small><b class="${c||''}">${inr(v)}</b></div>`;
+  return `<div class="card hero"><small>Total Available Balance</small><div class="big">${inr(bal)}</div><div class="two"><div><small>Income (is mahine)</small><b>${inr(s.inc)}</b></div><div><small>Expenses (is mahine)</small><b>${inr(s.exp)}</b></div></div></div>
+  <div class="qa"><button data-a="addtx" data-type="income"><span>💰</span>Income</button><button data-a="addtx" data-type="expense"><span>🛍️</span>Expense</button><button data-a="addtx" data-type="transfer"><span>⇄</span>Transfer</button><button data-a="addud" data-dir="given"><span>🤝</span>Udhaar</button><button data-a="addrem"><span>⏰</span>Reminder</button></div>
+  <div class="grid2">${mc('Income (mahina)',s.inc,'inc')}${mc('Expenses (mahina)',s.exp,'exp')}${mc('Money Given',u.given)}${mc('Received Back',u.back,'inc')}${mc('Money Borrowed',u.borrowed)}${mc('To Receive (lena)',u.recv,'inc')}${mc('To Pay (dena)',u.pay,'exp')}${showP?mc('Personal Savings (mahina)',ps.net,ps.net>=0?'inc':'exp'):''}${showB?mc('Business '+(bs.net>=0?'Profit':'Loss')+' (mahina)',bs.net,bs.net>=0?'biz':'exp'):''}</div>
+  <div class="card"><h3>Income vs Expense (6 mahine)</h3>${barChart(monthBuckets(6),p)}</div>
+  <div class="card"><h3>⏰ Upcoming</h3>${up.length?up.map(remRow).join(''):empty('Koi upcoming payment/reminder nahi','🎉')}<div class="acts"><button class="btn sm" data-a="page" data-p="rem">Sab dekho</button></div></div>
+  <div class="card"><h3>Recent transactions</h3>${rec6.length?rec6.map(txRow).join(''):empty('Abhi koi entry nahi. Upar se Income/Expense add karo.','🧾')}</div>`;
+}
+
+/* ===================== Reports ===================== */
+function repText(){
+  const k=ui.sub.rp||'month',ref=ui.sub.rd||today();const [a,b]=range(k,ref);
+  return {k,ref,a,b,label:({day:'Daily',week:'Weekly',month:'Monthly',year:'Yearly'})[k]+' ('+(a===b?dfmt(a):dfmt(a)+' – '+dfmt(b))+')'};
+}
+function repView(){
+  const p=cur(),R=repText(),s=stats(p,R.a,R.b);
+  const [pa,pb]=range(R.k,prevRef(R.k,R.ref)),ps=stats(p,pa,pb);
+  const cmp=(c,pv)=>pv?`<small>${c>=pv?'▲':'▼'} ${Math.abs((c-pv)/pv*100).toFixed(0)}% vs pichla</small>`:'<small>pichla: —</small>';
+  const showB=ui.scope!=='personal'&&bizs().length>0,bs=stats(bizP(),R.a,R.b);
+  const ps_=stats(P.personal,R.a,R.b);
+  const buckets=reportBuckets(R.k,R.ref);
+  const pend=live(db.udhaar).filter(u=>p(u)&&remaining(u)>0.004).sort((a,b)=>(a.due||'9999').localeCompare(b.due||'9999'));
+  const u=udStats(p);
+  return `<div class="pr-title">HisabBook — ${R.label} — ${ui.scope==='personal'?'Personal':ui.scope==='business'?'Business':'Combined'}</div>
+  <div class="grid2 noprint">${sel('Report','rp',[['day','Daily'],['week','Weekly'],['month','Monthly'],['year','Yearly']],R.k,'data-rep')}${field('Date','rd','date',R.ref,'data-rep')}</div>
+  <div class="small" style="margin:8px 0"><b>${R.label}</b></div>
+  <div class="grid2"><div class="metric"><small>Income</small><b class="inc">${inr(s.inc)}</b>${cmp(s.inc,ps.inc)}</div><div class="metric"><small>Expenses</small><b class="exp">${inr(s.exp)}</b>${cmp(s.exp,ps.exp)}</div><div class="metric"><small>${ui.scope==='business'?'Profit / Loss':'Net (Income − Expense)'}</small><b class="${s.net>=0?'inc':'exp'}">${inr(s.net)}</b>${cmp(s.net,ps.net)}</div><div class="metric"><small>Entries</small><b>${s.list.length}</b></div></div>
+  ${buckets.length?`<div class="card"><h3>Trend</h3>${barChart(buckets,p)}</div>`:''}
+  ${showB?`<div class="card"><h3>🏢 Business Profit & Loss</h3><div class="kv"><span>Revenue</span><b class="inc">${inr(bs.inc)}</b></div><div class="kv"><span>Operating expenses</span><b class="exp">${inr(bs.exp)}</b></div><div class="kv"><span><b>Operating Profit</b></span><b class="${bs.net>=0?'biz':'exp'}">${inr(bs.net)}</b></div><div class="kv"><span class="small">Capital/Loan in (P&L me nahi)</span><span class="small">${inr(bs.nonIn)}</span></div><div class="kv"><span class="small">Capital/Loan out (P&L me nahi)</span><span class="small">${inr(bs.nonOut)}</span></div></div>`:''}
+  ${ui.scope!=='business'?`<div class="card"><h3>👤 Personal Savings</h3><div class="kv"><span>Income − Expense</span><b class="${ps_.net>=0?'inc':'exp'}">${inr(ps_.net)}</b></div></div>`:''}
+  <div class="card"><h3>Category-wise expenses</h3>${catBars(s.cats)}</div>
+  <div class="card"><h3>Outstanding payments</h3><div class="kv"><span>Receivable (lena)</span><b class="inc">${inr(u.recv)}</b></div><div class="kv"><span>Payable (dena)</span><b class="exp">${inr(u.pay)}</b></div>${pend.map(x=>`<div class="row" data-a="udhist" data-id="${x.id}"><div class="grow"><b>${esc(cname(x.contactId))}</b><small>${x.dir==='given'?'Lena':'Dena'}${x.due?' · due '+dfmt(x.due):''}</small></div><b class="${x.dir==='given'?'inc':'exp'}">${inr(remaining(x))}</b></div>`).join('')}</div>
+  <div class="btns noprint"><button class="btn" data-a="csv">📊 Excel (CSV)</button><button class="btn pri" data-a="print">📄 PDF</button></div>
+  <div class="small noprint" style="margin-top:8px">PDF ke liye "Save as PDF" chuno. CSV file Excel / Google Sheets me khulti hai.</div>`;
+}
+function exportCsv(){
+  const p=cur(),R=repText(),s=stats(p,R.a,R.b);
+  const q=v=>'"'+String(v==null?'':v).replace(/"/g,'""')+'"';
+  const rows=[['Date','Type','Category','Account','Amount','Method','Note','Scope','Business','Counted in P&L']];
+  txsFor(p).filter(t=>t.date>=R.a&&t.date<=R.b).sort((a,b)=>a.date.localeCompare(b.date)).forEach(t=>rows.push([t.date,t.type,t.category,t.type==='transfer'?accName(t.accountId)+' -> '+accName(t.toAccountId):accName(t.accountId),t.amount,t.method||'',t.note||'',t.scope,bizName(t.bizId),t.type==='transfer'||t.kind==='nonop'?'No':'Yes']));
+  rows.push([],['SUMMARY',R.label],['Income',s.inc],['Expenses',s.exp],['Net',s.net],[],['OUTSTANDING']);
+  live(db.udhaar).filter(u=>p(u)&&remaining(u)>0.004).forEach(u=>rows.push([u.dir==='given'?'Receivable':'Payable',cname(u.contactId),remaining(u),u.due||'']));
+  download('hisabbook-report-'+R.a+'.csv','\ufeff'+rows.map(r=>r.map(q).join(',')).join('\n'),'text/csv');
+}
+
+/* ===================== Search ===================== */
+function searchHtml(){
+  const q=(ui.sub.sq||'').trim().toLowerCase(),f=ui.sub.sf||'all';
+  if(!q&&f==='all')return empty('Naam, category, amount, date ya business type karo','🔍');
+  const m=s=>!q||String(s).toLowerCase().includes(q);
+  let out='';
+  if(['all','income','expense'].includes(f)){
+    const l=live(db.tx).filter(t=>(f==='all'||t.type===f)&&m([t.note,t.category,t.source,t.amount,t.date,dfmt(t.date),accName(t.accountId),bizName(t.bizId)].join(' '))).sort(byDate).slice(0,40);
+    if(l.length)out+=`<div class="card"><h3>Transactions</h3>${l.map(txRow).join('')}</div>`;
+  }
+  if(['all','udhar','pending'].includes(f)){
+    const l=live(db.udhaar).filter(u=>(f!=='pending'||remaining(u)>0.004)&&m([cname(u.contactId),u.amount,u.date,u.notes,bizName(u.bizId)].join(' '))).slice(0,30);
+    if(l.length)out+=`<div class="card"><h3>Udhaar</h3>${l.map(u=>`<div class="row" data-a="udhist" data-id="${u.id}"><div class="ic mut">🤝</div><div class="grow"><b>${esc(cname(u.contactId))}</b><small>${u.dir==='given'?'Diya':'Liya'} · ${dfmt(u.date)} · ${ustat(u)}</small></div><b>${inr(remaining(u))}</b></div>`).join('')}</div>`;
+  }
+  if(['all','received'].includes(f)){
+    const l=live(db.payments).filter(pm=>{const u=db.udhaar.find(x=>x.id===pm.udhaarId);return u&&!u.deleted&&u.dir==='given'&&m([cname(u.contactId),pm.amount,pm.date,pm.note].join(' '))}).slice(0,30);
+    if(l.length)out+=`<div class="card"><h3>Received (wapsi mili)</h3>${l.map(pm=>{const u=db.udhaar.find(x=>x.id===pm.udhaarId);return `<div class="row" data-a="udhist" data-id="${u.id}"><div class="ic inc">↓</div><div class="grow"><b>${esc(cname(u.contactId))}</b><small>${dfmt(pm.date)}</small></div><b class="inc">${inr(pm.amount)}</b></div>`}).join('')}</div>`;
+  }
+  if(f==='all'){
+    const cs=live(db.contacts).filter(c=>m(c.name+' '+(c.phone||''))).slice(0,15);
+    if(cs.length)out+=`<div class="card"><h3>Contacts</h3>${cs.map(c=>`<div class="row" data-a="ledger" data-id="${c.id}"><div class="ic mut">${esc(c.name.charAt(0).toUpperCase())}</div><div class="grow"><b>${esc(c.name)}</b><small>${esc(c.phone||'')}</small></div></div>`).join('')}</div>`;
+    const bs=bizs().filter(b=>m(b.name+' '+b.category));
+    if(bs.length&&q)out+=`<div class="card"><h3>Businesses</h3>${bs.map(b=>`<div class="row" data-a="gobiz" data-id="${b.id}"><div class="ic mut">🏢</div><div class="grow"><b>${esc(b.name)}</b><small>${esc(b.category||'')}</small></div></div>`).join('')}</div>`;
+  }
+  return out||empty('Kuch nahi mila','🤷');
+}
+function searchView(){
+  const f=ui.sub.sf||'all';
+  return `<input id="sq" placeholder="🔍 Search karo..." value="${esc(ui.sub.sq||'')}" autofocus>
+  <div class="chips">${[['all','Sab'],['income','Income'],['expense','Expense'],['udhar','Udhaar'],['received','Received'],['pending','Pending']].map(([k,l])=>`<button class="chip ${f===k?'on':''}" data-a="sf" data-v="${k}">${l}</button>`).join('')}</div><div id="sres">${searchHtml()}</div>`;
+}
+
+/* ===================== Settings ===================== */
+function openAccForm(id){
+  const a=id?db.accounts.find(x=>x.id===id):{name:'',type:'bank',opening:0,scope:ui.scope==='business'?'business':'personal',bizId:null};
+  const draftScope=a.scope;
+  const build=(x)=>{
+    const sc=x.scope;const bid=sc==='business'?(x.bizId||(bizs()[0]||{}).id):null;
+    openModal(id?'Account edit':'Naya Account',field('Account ka naam','name','text',x.name,'required')+sel('Type','type',[['cash','Cash'],['bank','Bank'],['upi','UPI'],['other','Other']],x.type)+field('Opening balance (₹)','opening','number',x.opening,'step="0.01" inputmode="decimal"')+(id?'':sel('Scope','scope',[['personal','Personal'],['business','Business']],sc,'data-re'))+(!id&&sc==='business'?sel('Business','bizId',bizs().map(b=>[b.id,b.name]),bid):''),d=>{
+      if(!(d.name||'').trim())return toast('Naam daalo');
+      const op=num(d.opening);if(isNaN(op))return toast('Opening balance sahi daalo');
+      if(id){const before=JSON.parse(JSON.stringify(a));Object.assign(a,{name:d.name.trim(),type:d.type,opening:op,updated:now()});audit('edit','account',id,before,a)}
+      else{if(sc==='business'&&!bid)return toast('Pehle business banao');db.accounts.push(rec({name:d.name.trim(),type:d.type,opening:op,scope:sc,bizId:bid}))}
+      save();render();toast('Account save ho gaya ✅');
+    },{reopen:d=>build(Object.assign({},x,d))});
+  };
+  build(Object.assign({},a));
+}
+function openCatForm(){
+  const build=x=>openModal('Custom Category',field('Category ka naam','name','text',x.name,'required')+sel('Type','type',[['expense','Expense'],['income','Income']],x.type)+sel('Scope','scope',[['personal','Personal'],['business','Business']],x.scope),d=>{
+    const n=(d.name||'').trim();if(!n)return toast('Naam daalo');
+    if(live(db.categories).find(c=>c.name.toLowerCase()===n.toLowerCase()&&c.type===d.type&&c.scope===d.scope))return toast('Ye category pehle se hai');
+    db.categories.push(rec({name:n,type:d.type,scope:d.scope}));save();render();toast('Category add ho gayi ✅');
+  },{});
+  build({name:'',type:'expense',scope:'personal'});
+}
+function openPinForm(){
+  openModal('PIN lock set karo',field('Naya PIN (4-6 digit)','p1','password','','inputmode="numeric" pattern="[0-9]*" minlength="4" maxlength="6" required')+field('PIN dobara','p2','password','','inputmode="numeric" pattern="[0-9]*" minlength="4" maxlength="6" required'),async d=>{
+    if(!/^\d{4,6}$/.test(d.p1))return toast('PIN 4 se 6 digit ka hona chahiye');
+    if(d.p1!==d.p2)return toast('Dono PIN same nahi hain');
+    ls.set(KEYS.pin,await sha(d.p1));render();toast('PIN lock on ✅');
+  },{label:'PIN set karo'});
+}
+function openRmPin(){
+  openModal('PIN hatao',field('Abhi ka PIN','p','password','','inputmode="numeric" required'),async d=>{
+    if(await sha(d.p)!==ls.get(KEYS.pin))return toast('PIN galat hai');
+    ls.del(KEYS.pin);render();toast('PIN lock hata diya');
+  },{label:'PIN hatao'});
+}
+async function sha(s){
+  try{const b=await crypto.subtle.digest('SHA-256',new TextEncoder().encode('hb|'+s));return [...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,'0')).join('')}
+  catch(e){let h=5381;for(const c of 'hb|'+s)h=((h<<5)+h+c.charCodeAt(0))|0;return 'f'+h}
+}
+function settingsView(){
+  const theme=ls.get('hb_theme')||'auto',hasPin=!!ls.get(KEYS.pin);
+  const np=typeof Notification!=='undefined'?Notification.permission:'unsupported';
+  let ab=null;try{ab=JSON.parse(ls.get(KEYS.auto)||'null')}catch(e){}
+  return `<div class="card"><h3>👤 Profile</h3><div class="kv"><span>Naam</span><b>${esc(db.profile.name||'—')}</b></div><div class="acts"><button class="btn sm" data-a="profile">Naam badlo</button></div><div class="small" style="margin-top:6px">Data sirf is device ke browser me save hota hai (offline-first). Cloud sync / login is web version me nahi hai.</div></div>
+  <div class="card"><h3>🎨 Theme</h3><div class="chips">${[['auto','Auto'],['light','Light'],['dark','Dark']].map(([k,l])=>`<button class="chip ${theme===k?'on':''}" data-a="theme" data-v="${k}">${l}</button>`).join('')}</div></div>
+  <div class="card"><h3>🔒 Security</h3><div class="kv"><span>PIN lock</span><b>${hasPin?'ON':'OFF'}</b></div><div class="acts">${hasPin?'<button class="btn sm" data-a="setpin">PIN badlo</button><button class="btn sm dng" data-a="rmpin">PIN hatao</button>':'<button class="btn sm pri" data-a="setpin">PIN set karo</button>'}</div><div class="small" style="margin-top:6px">App 1 minute background me rehne par dobara lock ho jaati hai. Fingerprint lock sirf native Android app me possible hai.</div></div>
+  <div class="card"><h3>🔔 Notifications</h3><div class="kv"><span>Status</span><b>${np}</b></div>${np==='default'?'<div class="acts"><button class="btn sm pri" data-a="notif">Allow karo</button></div>':''}<div class="small" style="margin-top:6px">Reminder / udhaar due ki notification app khuli hone par aati hai.</div></div>
+  <div class="card"><h3>🏦 Accounts</h3>${live(db.accounts).map(a=>{const f=accFlow(a);return `<div class="row" data-a="editacc" data-id="${a.id}"><div class="ic mut">${a.type==='cash'?'💵':a.type==='upi'?'📱':'🏦'}</div><div class="grow"><b>${esc(a.name)}</b><small>${a.scope==='business'?'🏢'+esc(bizName(a.bizId)):'Personal'} · in ${inr(f.i)} · out ${inr(f.o)}</small></div><b>${inr(accBalance(a))}</b></div>`}).join('')}<button class="btn" style="width:100%;margin-top:8px" data-a="addacc">+ Account add karo</button></div>
+  <div class="card"><h3>🏢 Businesses</h3>${bizs().map(b=>`<div class="row" data-a="editbiz" data-id="${b.id}"><div class="grow"><b>${esc(b.name)}</b><small>${esc(b.category||'')}</small></div></div>`).join('')||'<div class="small">Koi business nahi</div>'}<button class="btn" style="width:100%;margin-top:8px" data-a="addbiz">+ Business add karo</button></div>
+  <div class="card"><h3>🏷️ Custom categories</h3>${live(db.categories).filter(c=>!c.builtin).map(c=>`<div class="row" style="cursor:default"><div class="grow"><b>${esc(c.name)}</b><small>${c.type} · ${c.scope}</small></div><button class="btn sm dng" data-a="delcat" data-id="${c.id}">✕</button></div>`).join('')||'<div class="small">Abhi koi custom category nahi</div>'}<button class="btn" style="width:100%;margin-top:8px" data-a="addcat">+ Category add karo</button></div>
+  <div class="card"><h3>💾 Backup & Data</h3><div class="acts"><button class="btn sm pri" data-a="backup">Backup download</button><button class="btn sm" data-a="restore">Restore file</button>${ab?`<button class="btn sm" data-a="autorestore">Auto-backup (${dfmt(ab.date)})</button>`:''}<button class="btn sm" data-a="audit">Audit log</button></div><div class="small" style="margin-top:6px">Roz ek automatic backup is browser me rakhi jaati hai. Manual backup file Google Drive / WhatsApp pe save kar lo.</div></div>
+  <div class="card"><h3>🧪 Demo mode</h3><div class="kv"><span>Status</span><b>${demo?'ON':'OFF'}</b></div><div class="acts"><button class="btn sm" data-a="demo">${demo?'Demo band karo (asli data wapas)':'Demo data dekho'}</button></div><div class="small" style="margin-top:6px">Demo ka data alag jagah rehta hai, asli data ko touch nahi karta.</div></div>
+  <div class="card"><h3>⚠️ Danger zone</h3><button class="btn dng" data-a="erase">${demo?'Demo data reset':'Saara data erase karo'}</button></div>
+  <div class="small" style="text-align:center">HisabBook v1.0</div>`;
+}
+function openAudit(){
+  const l=db.audit.slice(-60).reverse();
+  openModal('Audit log (last 60)',l.length?l.map(a=>`<div class="row" style="cursor:default"><div class="grow"><b>${esc(a.action)} · ${esc(a.type)}</b><small>${new Date(a.ts).toLocaleString('en-IN')}</small></div></div>`).join(''):empty('Abhi koi change record nahi','📜'),null,{noSubmit:true});
+}
+
+/* ===================== Render ===================== */
+function header(){
+  const pg=ui.page;
+  const titles={settings:'⚙️ Settings',search:'🔍 Search',rem:'🔔 Reminders'};
+  if(pg)return `<header class="hdr"><div class="hin"><div class="top"><button data-a="back">←</button><b>${titles[pg]}</b><span style="width:40px"></span></div></div></header>`;
+  const showScope=['home','tx','ud','rep'].includes(ui.tab);
+  return `<header class="hdr"><div class="hin"><div class="top"><b>📒 HisabBook</b><div><button data-a="page" data-p="search" aria-label="Search">🔍</button><button data-a="page" data-p="rem" aria-label="Reminders">🔔</button><button data-a="page" data-p="settings" aria-label="Settings">⚙️</button></div></div>
+  ${showScope?`<div class="seg">${[['personal','Personal'],['business','Business'],['combined','Combined']].map(([k,l])=>`<button class="${ui.scope===k?'on':''}" data-a="scope" data-s="${k}">${l}</button>`).join('')}</div>${ui.scope==='business'&&bizs().length>1?`<div class="chips"><button class="chip ${ui.biz==='all'?'on':''}" data-a="biz" data-id="all">Sab</button>${bizs().map(b=>`<button class="chip ${ui.biz===b.id?'on':''}" data-a="biz" data-id="${b.id}">${esc(b.name)}</button>`).join('')}</div>`:''}`:''}</div></header>`;
+}
+function nav(){
+  const t=[['home','🏠','Home'],['tx','🧾','Transactions'],['ud','🤝','Udhar'],['biz','🏢','Business'],['rep','📊','Reports']];
+  return `<nav class="nav">${t.map(([k,i,l])=>`<button class="${!ui.page&&ui.tab===k?'on':''}" data-a="tab" data-t="${k}"><span>${i}</span>${l}</button>`).join('')}</nav>`;
+}
+function render(){
+  let body;
+  try{
+    if(ui.page==='settings')body=settingsView();else if(ui.page==='search')body=searchView();else if(ui.page==='rem')body=remView();
+    else body=({home:homeView,tx:txView,ud:udView,biz:bizView,rep:repView})[ui.tab]();
+  }catch(e){console.error(e);body=empty('Kuch gadbad ho gayi: '+esc(e.message),'⚠️')}
+  $('#app').innerHTML=header()+`<main>${demo?'<div class="demo">DEMO MODE — ye nakli data hai</div>':''}${body}</main>`+nav();
+}
+
+/* ===================== Actions ===================== */
+const A={
+  tab:d=>{ui.tab=d.t;ui.page=null;saveUi();render();window.scrollTo(0,0)},
+  scope:d=>{ui.scope=d.s;saveUi();render()},
+  biz:d=>{ui.biz=d.id;saveUi();render()},
+  gobiz:d=>{ui.biz=d.id;ui.tab='biz';ui.page=null;saveUi();render()},
+  page:d=>{ui.page=d.p;ui.sub.sq='';render();window.scrollTo(0,0);if(d.p==='search')setTimeout(()=>{const e=$('#sq');e&&e.focus()},50)},
+  back:()=>{ui.page=null;render()},
+  closem:closeModal,
+  mdel:()=>{MOD&&MOD.del&&MOD.del()},
+  addtx:d=>openTxForm(pick({type:d.type,scope:d.scope,category:d.cat})),
+  edittx:d=>{const t=db.tx.find(x=>x.id===d.id);if(t)openTxForm(Object.assign({},t))},
+  tf:d=>{ui.sub.tf=d.v;render()},
+  addud:d=>openUdhaarForm(pick({dir:d.dir,scope:d.scope,kind:d.scope==='business'?(d.dir==='given'?'customer':'supplier'):undefined})),
+  udedit:d=>{closeModal();const u=db.udhaar.find(x=>x.id===d.id);if(u)openUdhaarForm(Object.assign({},u))},
+  uddel:d=>delUdhaar(d.id),
+  udpay:d=>{closeModal();openPayForm(d.id)},
+  udhist:d=>openHistory(d.id),
+  voidpay:d=>{
+    if(!confirm('Ye payment void karni hai? (Record history me struck-through dikhega)'))return;
+    const p=db.payments.find(x=>x.id===d.id);const before=JSON.parse(JSON.stringify(p));p.deleted=true;p.deletedAt=now();audit('void','payment',p.id,before,null);save();render();openHistory(p.udhaarId);
+  },
+  usub:d=>{ui.sub.u=d.v;render()},
+  ledger:d=>openLedger(d.id),
+  addbiz:()=>openBizForm(),editbiz:d=>openBizForm(d.id),
+  additem:()=>openItemForm(),edititem:d=>openItemForm(d.id),
+  stk:d=>{const i=db.items.find(x=>x.id===d.id);if(!i)return;i.qty=Math.max(0,i.qty+parseInt(d.d));i.updated=now();save();render()},
+  addrem:()=>openRemForm(),editrem:d=>openRemForm(d.id),
+  remdone:d=>{
+    const r=db.reminders.find(x=>x.id===d.id);if(!r)return;
+    if(r.repeat==='weekly')r.date=addDays(r.date,7);else if(r.repeat==='monthly')r.date=addMonths(r.date,1);else if(r.repeat==='yearly')r.date=addMonths(r.date,12);else{r.done=true;r.doneAt=now()}
+    save();render();toast(r.done?'Reminder complete ✅':'Agli date set: '+dfmt(r.date));
+  },
+  remsnooze:d=>{const r=db.reminders.find(x=>x.id===d.id);if(!r)return;r.date=r.date<today()?addDays(today(),1):addDays(r.date,1);save();render();toast('Snooze: '+dfmt(r.date))},
+  sf:d=>{ui.sub.sf=d.v;render()},
+  csv:exportCsv,print:()=>window.print(),
+  theme:d=>{ls.set('hb_theme',d.v);applyTheme();render()},
+  profile:()=>openModal('Profile',field('Aapka naam','name','text',db.profile.name),d=>{db.profile.name=(d.name||'').trim();save();render()}),
+  setpin:openPinForm,rmpin:openRmPin,
+  notif:()=>{try{Notification.requestPermission().then(()=>render())}catch(e){toast('Is browser me notifications support nahi')}},
+  addacc:()=>openAccForm(),editacc:d=>openAccForm(d.id),
+  addcat:openCatForm,
+  delcat:d=>{const c=db.categories.find(x=>x.id===d.id);if(c&&confirm('Category hatani hai? (purani entries safe rahengi)')){c.deleted=true;save();render()}},
+  backup:()=>download('hisabbook-backup-'+today()+'.json',JSON.stringify(db),'application/json'),
+  restore:()=>$('#rf').click(),
+  autorestore:()=>{try{const ab=JSON.parse(ls.get(KEYS.auto));if(confirm(dfmt(ab.date)+' ka auto-backup restore karna hai? Abhi ka data replace ho jayega.')){db=ab.data;save();render();toast('Restore ho gaya ✅')}}catch(e){toast('Backup padh nahi paya')}},
+  audit:openAudit,
+  demo:()=>{demo=!demo;ls.set('hb_demo',demo?'1':'0');ui.biz='all';ui.sub={};load();render();toast(demo?'Demo mode ON':'Asli data wapas')},
+  erase:()=>{
+    if(!confirm(demo?'Demo data reset karna hai?':'POORA data hamesha ke liye delete ho jayega. Pehle backup le liya hai?'))return;
+    if(!demo&&!confirm('Pakka? Ye wapas nahi aayega.'))return;
+    ls.del(dbKey());db=null;load();ui.biz='all';render();toast('Data erase ho gaya');
+  },
+  lockwipe:()=>{
+    if(!confirm('PIN bhoolne par app ka SAARA data erase hoga. Aage badhein?'))return;
+    ls.del(KEYS.real);ls.del(KEYS.demo);ls.del(KEYS.pin);ls.del(KEYS.auto);location.reload();
+  }
+};
+document.addEventListener('click',e=>{
+  const el=e.target.closest('[data-a]');if(!el)return;
+  if(el.tagName==='A')return;
+  const f=A[el.dataset.a];if(f){e.preventDefault();f(el.dataset,el)}
+});
+document.addEventListener('submit',async e=>{
+  if(e.target.id!=='mform')return;e.preventDefault();
+  if(busy||!MOD||!MOD.onSubmit)return;busy=true;
+  try{const fd=new FormData(e.target);const d=Object.fromEntries(fd.entries());const r=await MOD.onSubmit(d,fd);if(r!==false)closeModal()}
+  catch(err){console.error(err);toast('Error: '+(err&&err.message||err))}
+  setTimeout(()=>busy=false,400);
+});
+document.addEventListener('change',e=>{
+  const t=e.target;
+  if(t.hasAttribute&&t.hasAttribute('data-re')&&MOD&&MOD.reopen){const d=Object.fromEntries(new FormData($('#mform')).entries());MOD.reopen(d);return}
+  if(t.hasAttribute&&t.hasAttribute('data-rep')){ui.sub[t.name==='rp'?'rp':'rd']=t.value||today();render();return}
+  if(t.id==='tm'){ui.sub.tm=t.value;$('#txlist').innerHTML=txListHtml()}
+  if(t.id==='rf'){
+    const f=t.files[0];if(!f)return;const r=new FileReader();
+    r.onload=()=>{try{const x=JSON.parse(r.result);if(!x||!Array.isArray(x.accounts)||!Array.isArray(x.tx))throw 0;
+      if(!confirm('Restore karne se abhi ka data replace ho jayega. Aage badhein?'))return;db=x;load();save();render();toast('Restore ho gaya ✅')}catch(err){toast('File sahi backup nahi hai')}};
+    r.readAsText(f);t.value='';
+  }
+});
+document.addEventListener('input',e=>{
+  const id=e.target.id;
+  if(id==='tq'){ui.sub.tq=e.target.value;$('#txlist').innerHTML=txListHtml()}
+  else if(id==='sq'){ui.sub.sq=e.target.value;$('#sres').innerHTML=searchHtml()}
+  else if(id==='lq'){ui.sub.lq=e.target.value;$('#lres').innerHTML=ledgerListHtml()}
+});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&MOD)closeModal()});
+$('#modal').addEventListener('click',e=>{if(e.target.id==='modal')closeModal()});
+
+/* ===================== Theme, lock, notifications ===================== */
+function applyTheme(){
+  const t=ls.get('hb_theme')||'auto';
+  const dark=t==='dark'||(t==='auto'&&window.matchMedia&&matchMedia('(prefers-color-scheme: dark)').matches);
+  document.documentElement.dataset.theme=dark?'dark':'light';
+}
+let lockedAt=0;
+function showLock(){
+  if(!ls.get(KEYS.pin))return;
+  $('#lock').innerHTML=`<div class="lk"><div style="font-size:44px">📒</div><h2>HisabBook</h2><p class="small" style="color:#b8c6ea">PIN daalo</p><form id="lf"><input id="lpin" type="password" inputmode="numeric" maxlength="6" autocomplete="off"><div id="lerr" class="small" style="color:#fca5a5;min-height:20px;margin-top:8px"></div><button class="btn" style="width:100%;margin-top:6px" type="submit">Unlock</button></form><button class="chip" style="margin-top:18px;background:none;color:#93a0bb;border-color:#344" data-a="lockwipe">PIN bhool gaye?</button></div>`;
+  $('#lock').classList.add('on');
+  $('#lf').addEventListener('submit',async e=>{e.preventDefault();const v=$('#lpin').value;if(await sha(v)===ls.get(KEYS.pin)){$('#lock').classList.remove('on');$('#lock').innerHTML=''}else{$('#lerr').textContent='Galat PIN';$('#lpin').value=''}});
+  setTimeout(()=>{const i=$('#lpin');i&&i.focus()},50);
+}
+document.addEventListener('visibilitychange',()=>{
+  if(document.hidden){lockedAt=Date.now()}
+  else if(lockedAt&&Date.now()-lockedAt>60000){showLock()}
+});
+function checkNotifs(){
+  if(demo||typeof Notification==='undefined'||Notification.permission!=='granted')return;
+  const t=today();
+  upcomingAll().filter(x=>x.date<=t).forEach(x=>{
+    const k='hb_n_'+x.key+'_'+t;if(ls.get(k))return;ls.set(k,'1');
+    const title='HisabBook: '+x.title,body=(x.date<t?'Overdue · ':'Aaj · ')+(x.amount?inr(x.amount):'');
+    try{
+      if(navigator.serviceWorker&&navigator.serviceWorker.ready)navigator.serviceWorker.ready.then(r=>r.showNotification(title,{body,icon:'icon-192.png'})).catch(()=>new Notification(title,{body}));
+      else new Notification(title,{body});
+    }catch(e){}
+  });
+}
+
+/* ===================== Boot ===================== */
+load();applyTheme();autoBackup();render();showLock();
+setTimeout(checkNotifs,1500);setInterval(checkNotifs,60000);
+if('serviceWorker' in navigator&&/^https?:/.test(location.protocol))navigator.serviceWorker.register('sw.js').catch(()=>{});
+</script>
+</body>
+</html>
